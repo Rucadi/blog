@@ -29,6 +29,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: install-nix
+        uses: cachix/install-nix-action@v26
       - name: build-webpage
         uses: workflow/nix-shell-action@v3.3.0
         with:
