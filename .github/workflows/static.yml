@@ -34,7 +34,7 @@ jobs:
       - name: Nix Shell
         uses: workflow/nix-shell-action@v3.3.0
         with:
-          script: ${{ github.workspace }}/build-page.sh
+          script: ls ${{ github.workspace }} && ${{ github.workspace }}/build-page.sh
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
