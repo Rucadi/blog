@@ -31,10 +31,10 @@ jobs:
     steps:
       - name: install-nix
         uses: cachix/install-nix-action@v26
-      - name: Nix Shell
-        uses: workflow/nix-shell-action@v3.3.0
+      - name: Run Cmd
+        uses: rethab/bash-action@v1
         with:
-          script: ls ${{ github.workspace }} && ${{ github.workspace }}/build-page.sh
+          command: ${{ github.workspace }}/build-page.sh
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
