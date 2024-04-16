@@ -34,9 +34,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Run Cmd
-        uses: rethab/bash-action@v1
+        uses: workflow/nix-shell-action@v3.3.0
         with:
-          command: ${{ github.workspace }}/build-page.sh
+          script: ${{ github.workspace }}/build-page.sh
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
