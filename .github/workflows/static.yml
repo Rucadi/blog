@@ -31,6 +31,8 @@ jobs:
     steps:
       - name: install-nix
         uses: cachix/install-nix-action@v26
+      - name: Nix Shell
+        uses: workflow/nix-shell-action@v3.3.0
         with:
           script: ${{ github.workspace }}/build-page.sh
       - name: Checkout
