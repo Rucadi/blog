@@ -34,7 +34,7 @@ jobs:
       - name: build-webpage
         uses: workflow/nix-shell-action@v3.3.0
         with:
-          script: ./build-page.sh
+          script: $GITHUB_WORKSPACE/build-page.sh
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
