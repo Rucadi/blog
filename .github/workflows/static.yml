@@ -31,12 +31,12 @@ jobs:
     steps:
       - name: install-nix
         uses: cachix/install-nix-action@v26
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Run Cmd
         uses: rethab/bash-action@v1
         with:
           command: ${{ github.workspace }}/build-page.sh
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
