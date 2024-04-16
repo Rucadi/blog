@@ -1,15 +1,20 @@
 let 
     pkgs = import <nixpkgs> {};
     utils = import ./nixutils {inherit pkgs;};
-    articles = pkgs.callPackage ./articles {inherit utils;};
-    #######################atricles##########################
-    articlesWithExtras = map (article: article // {
-            shortContent = utils.fixedString { str=article.content; len=300;};
-            uri = "${utils.string2uri { str=article.name; }}.html";
-        }) articles;
-    articleToShortHtml = article: import ./articledesc.nix.html {inherit article;};
-    ############################################################
-    articleHtml = pkgs.lib.foldl (acc: article: acc + articleToShortHtml article) '''' articlesWithExtras;
+    images = import ./images {inherit utils;};
+
+    htmlGenerator = articleHtml : (import ./template.nix.html {inherit articleHtml; inherit images;});
+
+    articles = pkgs.callPackage ./articles {inherit utils images htmlGenerator;};
+    shortArticleHtmlList = pkgs.lib.foldl (acc: article: acc + article.shortArticle) '''' articles;
+
+    index.html = pkgs.writeTextDir "site/index.html" (htmlGenerator shortArticleHtmlList);
 in
-pkgs.writeText "index.html" (import ./template.nix.html {inherit articleHtml; socialHtml = "social";})
-#(builtins.head articles).shortContent
+pkgs.buildEnv {
+    name = "site";
+    paths = [
+        index.html
+        ./embed
+        ] ++ map 
+        (article: article.file) articles;
+}

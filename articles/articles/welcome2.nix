@@ -1,4 +1,4 @@
-{utils}:
+{utils, images}:
 rec {
     name = "Welcome2";
     category = "nix";
