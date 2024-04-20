@@ -25,7 +25,7 @@ let
                 </p>
             </header>
             <div>
-            ${contentHtml};
+            ${contentHtml}
             </div>
         </article>
         '');

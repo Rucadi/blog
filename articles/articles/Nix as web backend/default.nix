@@ -3,18 +3,27 @@ let double'' = "''";
 dollar = "$";
 
 website_image = (utils.file2base64 ./assets/website.jpg).htmlImage;
+#In the post [what is nix](/what-is-nix.html) we explained a little bit of the key concepts of the nix language.
 
 in
 rec {
-    name = "HTMX+nix as backend";
+    name = "Nix as web backend featuring HTMX";
     category = "nix";
     date = "2024-04-20";
     authors = ["ruben"];
     content = ''
-In the post [what is nix](/what-is-nix.html) we explained a little bit of the key concepts of the nix language.
+
+Welcome to my first blog post! I'm super excited to share this with you all. 🎉 
+
+In this post I will share with you some proof of concepts that I have been working on, and that I think are really cool. 
+They are based on [Nix](https://nixos.org/) is a powerful package manager and a language that is used to describe how to build software. 
 
 But what if we try to push the boundaries of what we can do with nix? What if we use nix as a backend for a web application?
 Ones may say that I'm crazy, but I'm not as crazy as the ones that suggested to use js as a backend language :)
+
+I will assume that you are familiar with the nix language, so I'll skip the basics and go directly to the point. If you are not familiar with nix, 
+I recommend you to read the [nix manual](https://nixos.org/manual/nix/stable/). [nix pills](https://nixos.org/guides/nix-pills/) and also this video
+that I think it's neat [The Secret of Nix](https://youtu.be/sSn1svY14Ds). 
 
 
 For this demonstration, we will only use nix in pure evaluation mode and with sandbox.
@@ -390,7 +399,8 @@ In this case, we will write a full backend in nix that will:
 - Have a button to run the code
 - Have a div where the assembly code will be displayed
 
-We will use HTMX to make the request with the code to the backend, and return the result into a div.
+We will use HTMX to make the request with the code to the backend, and return the result into a div, which makes perfect sense and allows us 
+to really do not have to add any boilerplate nor any other code to the frontend.
 
 Doing this in HTML, is no different than using any other html template library, take a look at this code:
 
@@ -445,6 +455,7 @@ Ready to give it a test? Just fire up your terminal and run this command:
 ```
 docker run -it --rm -p 5555:5555 rucadi/blog:nix_as_web_backend
 ```
+And don't forget to checkout the code at [https://github.com/Rucadi/blog_code/tree/master](https://github.com/Rucadi/blog_code/tree/master)
 
 ${website_image}
 
