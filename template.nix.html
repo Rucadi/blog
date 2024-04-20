@@ -11,6 +11,11 @@ styles = ''
 <link rel="stylesheet" type="text/css" href="css/fontawesome.css">
 <link rel="stylesheet" type="text/css" href="css/brands.css">
 <link rel="stylesheet" type="text/css" href="css/solid.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script>hljs.highlightAll();</script>
 '';
 
 in
@@ -52,8 +57,6 @@ in
 
     <nav>
       <ul class="list">
-
-
             <li>
               <a target="_self"
                  href="about.html">
@@ -81,6 +84,7 @@ in
       </li>
     </ul>
   </div>
+  <!-- <canvas style="background-color:azure;" id="map"> </canvas> -->
 
 </aside>
 
@@ -90,16 +94,25 @@ in
   </nav>
 
   ${articleHtml}
-
   <div class="pagination">
   </div>
-
-  <footer>
-  <p>&copy;  </p>
-  <p>
-  Built with Nix Based on flex-pelican theme!
-  </p></footer>  
+  
 </main>
+
+  <script src="js/pagemap.min.js"></script>
+  <script>
+      pagemap(document.querySelector('#map'));
+  </script>
+
+<div class="pagination">
+</div>
+
+<footer>
+<p>&copy;  </p>
+<p>
+Built with Nix Based on flex-pelican theme!
+</p></footer>  
+
 
 </body>
 </html>
