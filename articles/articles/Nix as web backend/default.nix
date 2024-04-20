@@ -2,15 +2,16 @@
 let double'' = "''";
 dollar = "$";
 
+website_image = (utils.file2base64 ./assets/website.jpg).htmlImage;
 
 in
 rec {
     name = "HTMX+nix as backend";
     category = "nix";
-    date = "2026-07-01";
+    date = "2024-04-20";
     authors = ["ruben"];
     content = ''
-In the post [what is nix](/what-is-nix) we explained a little bit of the key concepts of the nix language.
+In the post [what is nix](/what-is-nix.html) we explained a little bit of the key concepts of the nix language.
 
 But what if we try to push the boundaries of what we can do with nix? What if we use nix as a backend for a web application?
 Ones may say that I'm crazy, but I'm not as crazy as the ones that suggested to use js as a backend language :)
@@ -89,7 +90,7 @@ We receive 3 parameters from the python code as **string**, so we define a funct
     queryJson,
     path    
 }:
-${double''}html code here${double''}
+${double''}parsing code for the path/request type here${double''}
 </code></pre>
 ```
 
@@ -101,7 +102,7 @@ Then we can pass the query to a nix attribute set thanks to the **builtins.fromJ
 let 
     query = builtins.fromJSON queryJson;
 in
-${double''}html code here${double''}
+${double''}parsing code for the path/request type here${double''}
 </code></pre>
 ```
 
@@ -114,13 +115,18 @@ let
     query = builtins.fromJSON queryJson;
     main_endpoint = import ./root {inherit query;};
 in
-${double''}html code here${double''}
+${double''}parsing code for the path/request type here${double''}
 </code></pre>
 ```
 
-# endpoint root/default.nix
+# Endpoints and path selection
 
-We will define an endpoint as an attribute set of expressions that will be evaluated when the endpoint at the path is requested.
+Now that we explained how to parse the parameters received from the python code, we need to define the endpoints that we will use in our application.
+
+To do that, we will create a new file called default.nix inside a folder called root, this file will contain the endpoints that we will use in our application.
+
+This, will receive as a parameter the query, so we can use it to modify the response of thee endpoint, and we will return an attribute set with the different endpoints and type of request.
+
 
 ```{=html}
 <pre><code class="language-c++">
@@ -135,22 +141,30 @@ We will define an endpoint as an attribute set of expressions that will be evalu
 </code></pre>
 ```
 
-In this example, curl -X GET localhost:5000/test/my/hello will return "You are accessing /test/my/hello with a GET request".
+Once we implement the path-selection logic in nix, this endpoints file for this request:
+`curl -X GET localhost:5000/test/my/hello` would return `"You are accessing /test/my/hello with a GET request"`
+
 Easy right?
 
 
-# Returning the correct endpoint
+# Path selection for the endpoints
 
-Now, we need to return the correct endpoint based on the path requested.
-As we mentioned, path is passed as a string, so we need to do some kind of string manipulation to get the correct endpoint.
+Now we return to the entrypoint of our nix expression, we received the 3 parameters `{request_type, queryJson, path}` and from that we 
+have to access the correct endpoint defined in root/default.nix
 
-Putting as an example the path "test/my/hello", we need to split the string by "/" and then recursively access the attribute set until we reach the correct endpoint.
+To select the endpoint, we use the path, and since the path is string, 
+we need to manipulate it to pinpoint the exact endpoint.
 
-Unfortunately, nix does not have a built-in function to split a string, but nixpkgs does! We can either import nixpkgs or copy the function to our code.
+Unfortunately, nix does not have a built-in function to split a string, 
+but nixpkgs does! We can either import nixpkgs or copy the function to our code.
 
+In nix as a functional language, the way to do it is:
 
-Once we have our splitstring function, we can create a function that we pass the endpoint example and the path "test/my/hello" and it will return the correct endpoint
+- Split the string into a list of strings
+- Pick the beginning of the attribute set (can be seen as a tree)
+- Access the attribute set recursively until we reach the correct endpoint.
 
+The following code tries to do exactly that:
 ```{=html}
 <pre><code class="language-c++">
 adquireNixObjectByPath = endpoint: pathToSearch: 
@@ -167,7 +181,7 @@ first we get a list of the path passed, for exmaple, test/my/hello will be trans
 <pre><code class="language-c++">lib.splitString "/" pathToSearch</code></pre>
 ```
 
-Then we use the foldl' function to recursively access the attribute set until we reach the correct endpoint.
+Then we use the [foldl'](https://nixos.org/manual/nix/stable/language/builtins.html#builtins-foldl') function to recursively access the attribute set until we reach the correct endpoint.
 
 ```{=html}
 <pre><code class="language-c++">builtins.foldl' (a: b: a."${dollar}{b}") endpoint (lib.splitString "/" pathToSearch);</code></pre>
@@ -216,20 +230,22 @@ is really useful, but it's a good start.
 
 # Making it more dynamic
 
-As nix mentions in their main webpage, nix tires to get reproducibility and determinism in the evaluations, this does not mean that the 
+As nix mentions in their main webpage, nix focus is to achieve reproducibility and determinism in the evaluations, this does not mean that the 
 inputs to the evaluation cannot change, but that for a given input, nix will "always" produce the same output.
-
-To fix this, we need to introduce a little bit of *impurity*.
 
 While we usually cannot have a source of impurity in nix, some of the builtins functions are impure and allowed to be used in non-impure scenarios.
 This is the case for: `builtins.fetchurl url` [documentation](https://nixos.org/manual/nix/unstable/language/builtins#builtins-fetchurl).
-Usually, if we want to access the internet from nix, we need to know the hash of the result in advance, however, the builtin fetchurl function is 
-special. 
+
+Usually, if we want to access the internet from nix, 
+we need to know the hash of the result in advance. This is because nix doesn't can't trust that it receives the same object when performing
+the same request to the same url. This is a security and error-prevention measure, that ensures the reproducibility of the evaluations.
+
+However, the [builtins.fetchurl function](https://nixos.org/manual/nix/stable/language/builtins#builtins-fetchurl) is special. 
 It will download the file from the internet and store it in the nix store, finally, it will return the path to the file. No hash is needed.
 
 Let's try it!
 
-First of all we will find a simple API to talk to, for example, randomnumberapi, we can call this endpoint and we will get a random number inside an array of 1 element!
+First of all we will find a simple API to talk to, for example, [randomnumberapi](https://www.randomnumberapi.com), we can call this endpoint and we will get a random number inside an array of 1 element!
 
 ```
 [nixos@nixos:~/demo/example2]$ curl https://www.randomnumberapi.com/api/v1.0/random
@@ -238,6 +254,8 @@ First of all we will find a simple API to talk to, for example, randomnumberapi,
 
 How could we read this number from nix?
 
+The result of builtins.fetchurl is a path to the file, so we can use the builtins.readFile function to read the content of the file.
+
 ```{=html}
 <pre><code class="language-c++">
 randomNumber = builtins.readFile (builtins.fetchurl http://www.randomnumberapi.com/api/v1.0/random);
@@ -245,14 +263,14 @@ randomNumber = builtins.readFile (builtins.fetchurl http://www.randomnumberapi.c
 ```
 
 this snippet will download the file and store the content in the variable randomNumber. 
-From here, we can pass it to nix using the `builtins.toJSON` function that will convert from a json string to nix.
+From here, we can pass it to nix using the [`builtins.toJSON`](https://nixos.org/manual/nix/stable/language/builtins#builtins-toJSON) function that will convert from a json string to nix.
 
 ```{=html}
 <pre><code class="language-c++">
 randomNumberList = builtins.fromJSON randomNumber;
 </code></pre>
 ```
-Finally, we can access the number using the list index with `builtins.elemAt` and pass it to string
+Finally, we can access the number using the list index with [`builtins.elemAt`](https://nixos.org/manual/nix/stable/language/builtins#builtins-elemAt) and pass it to string
 
 ```{=html}
 randomNumberStr = toString (builtins.elemAt randomNumberList 0);
@@ -293,15 +311,15 @@ Wait? Why is it always returning 23?
 
 # The nix Store and sources of impurity
 
-Nix was really clever with the last request, once it downloads the file, it stores it in the nix store, and then it will always return the same file.
-This means that we cannot call other services or APIs from nix, as we will only get the same result over and over again, and only the first time we will actually perform the request.
+As Nix is meant for reproducibility, unless we explicitly remove the file from the nix store, the same GET request to a service will always return the same cached result. 
+This means that we cannot call other services or APIs from nix, 
+as we will only get the same result over and over again.
 
 While this is a limitation, do you really think that not being allowed to perform two times the same request can stop us? 
 We only need to be a little bit more clever!
 
-Nix commands have a really useful flag that can be used to our advantage, and in fact, it is even preferable that we make use of it!
-It is [--eval-store store-url  and --no-require-sigs](https://nixos.org/manual/nix/stable/command-ref/new-cli/nix3-eval.html#common-evaluation-options)
-What would happen if we use this flag and we pass a different store-url every time we evaluate the expression?
+Nix commands have a really useful flag that can be used to our advantage, [--eval-store store-url  and --no-require-sigs](https://nixos.org/manual/nix/stable/command-ref/new-cli/nix3-eval.html#common-evaluation-options)
+These flags will allow us to perform the evaluation in a different store, which means that we can safely perform a request and remove the result later!
 
 Let's try it!
 
@@ -392,21 +410,19 @@ If we take a look at the button called "runcode", we can see what happens when w
 - We swap the innerHTML of the div "output" with the result of the request
 
 
-
-Now, the interesting part:
-
 # Compiling code and returning the result from NIX.
 
 Nix has a really powerful feature, if you already use nix, you for sure know about nixpkgs, which is a collection of programs that have been packaged for nix.
 This means that we can use any program that is in nixpkgs in our nix expressions, and we can build new derivations with them as inputs.
 
 In this case, we will create a derivation that will compile the code, run it and return the result as its output. 
-Then, we will use IFD (Import from derivation), to get the output of the built derivation and return it as the result of the evaluation.
+Then, we will use IFD [Import from derivation](https://fzakaria.com/2020/10/21/nix-parallelism-import-from-derivation.html), to get the output of the built derivation and return it as the result of the evaluation.
 
 
 You may think that is inherintly unsafe to run code from the internet, but we are using nix, with pure evaluation mode and [sandbox enabled](https://nixos.wiki/wiki/Nix_package_manager#Sandboxing)
-This means that the code will be run in a sandbox, and it will not be able to access the internet, or any other file in the system.
-Also, since we are using a temporary folder, any output generated will be removed after the evaluation is done, so we are limiting any possible damage to the system.
+This means that the code will be run in a sandbox, and it will not be able to access the internet nor any other file in the system.
+Also, since we are using a temporary folder, any output generated will be removed after the evaluation is done,
+so we are limiting any possible damage to the system.
 
 In the following example, we are writing the compile.GET endpoint, that will receive the code, compile it and return the result.
 Notice that we use nixpkgs extensively, and also take some steps to ensure that we don't return too much data.
@@ -414,18 +430,44 @@ Notice that we use nixpkgs extensively, and also take some steps to ensure that 
 ${builtins.readFile ./assets/compile.get.nix}
 ```
 
-Going into details, we just write the code into a file called main.cpp,
-we specify the commands to compile and to run, and ensure using timeout that the code will not run for more than 10 seconds.
-Then we return the output of the command, and we are done. We also return any warnings or errors the compiler may have generated.
+Going into details, here's how it works: we simply write the code into a file called main.cpp, 
+specify the compile and run commands, and ensure with timeout that the code won't run for more than 10 seconds.
 
-From this, we are all done, 150 lines of code and we have a full backend that will compile and run code from the internet, and return the result to the user in a safe way.
+Then, we grab the output of the command along with any warnings or errors the compiler might throw our way. And voila, we're done!
 
 
-You can try this by yourself by running the following command:
+From this, we are all done, 150 lines of code and we have a full backend that will compile and run code from the user,
+and return the result to the user in a safe way.
+
+
+Ready to give it a test? Just fire up your terminal and run this command:
 
 ```
 docker run -it --rm -p 5555:5555 rucadi/blog:nix_as_web_backend
 ```
 
+${website_image}
+
+Could the next step be to do a todo app?
+
+
+# Conclusions
+
+Writing this post was a blast, and I hope you had as much fun reading it as I did creating it! Thanks a bunch for checking it out! 🫡
+
+Nix is seriously powerful and can surprise you with its versatility. While I started this post as a bit of a joke, 
+it turned into a cool proof of concept that could actually be pretty handy in real-world situations.
+
+The complexity required to reach this solution was not that high,
+and I feel like writing this in any other language could have been more complex and error-prone.
+
+Plus, the cool thing is how seamlessly you can integrate different software stacks with Nix. 
+In this case, we mixed in GCC, timeout, and more, all from within the Nix code. Pretty neat, huh?
+
+I'm not exactly pushing for using Nix exclusively for building the entire backend, but I do think it's pretty great for static websites 
+(like this blog, which I whipped up using Nix!). 
+However, there's definitely room for improvement. 
+
+If Nix had better error handling and smoother ways to handle storage and network requests, it could really step up its game as a serious option.
 '';
 }
