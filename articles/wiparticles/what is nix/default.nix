@@ -2,11 +2,10 @@
 rec {
     name = "What is NIX";
     category = "nix";
-    date = "2026-07-01";
+    date = "2023-07-01";
     authors = ["ruben"];
     content = ''
 
-# What is Nix
 Nix is a functional language designed around *derivations*, which are instructions on how create files from other files.
 These instructions instead of only being pieces of nix code, can also be shell scripts or any other kind of executable.
 
