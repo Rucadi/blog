@@ -57,8 +57,6 @@ in
 
     <nav>
       <ul class="list">
-
-
             <li>
               <a target="_self"
                  href="about.html">
@@ -86,6 +84,7 @@ in
       </li>
     </ul>
   </div>
+    <canvas style="background-color:azure;" id="map"> </canvas>
 
 </aside>
 
@@ -95,16 +94,31 @@ in
   </nav>
 
   ${articleHtml}
-
   <div class="pagination">
   </div>
-
+  
   <footer>
   <p>&copy;  </p>
   <p>
   Built with Nix Based on flex-pelican theme!
   </p></footer>  
+  
 </main>
+
+  <script src="js/pagemap.min.js"></script>
+  <script>
+      pagemap(document.querySelector('#map'));
+  </script>
+
+<div class="pagination">
+</div>
+
+<footer>
+<p>&copy;  </p>
+<p>
+Built with Nix Based on flex-pelican theme!
+</p></footer>  
+
 
 </body>
 </html>

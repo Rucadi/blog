@@ -18,17 +18,16 @@ let
         shortContentHtml = utils.fixedString {str = contentHtml; len = 300;};
         file = writeTextDir "site/${uri}" (htmlGenerator ''
         <article class="single">
-        <header>
-            <h1 id="${utils.string2uri article.name}">${article.name}</h1>
-            <p>
-            Posted on ${article.date} in category ${article.category}
-            </p>
-        </header>
-        <div>
-        ${contentHtml};
-        </div>
+            <header>
+                <h1 id="${utils.string2uri article.name}">${article.name}</h1>
+                <p>
+                Posted on ${article.date} in category ${article.category}
+                </p>
+            </header>
+            <div>
+            ${contentHtml};
+            </div>
         </article>
-        
         '');
         }) sortedArticles;
 in
