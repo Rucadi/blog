@@ -10,7 +10,6 @@ let
   array_of_expertise = [
     "Participant in SC18 Student Cluster Competition"
     "ex-Board Member of video games development association (VGAFIB)"
-    "Several Programming Languages"
     "FPGA"
     "CUDA"
     "C++23"
