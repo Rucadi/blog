@@ -1,4 +1,4 @@
-{pkgs}:
+{pkgs ? import <nixpkgs> {}}:
 {
     file2base64 = uri: (pkgs.callPackage ./file2base64.nix { }) {inherit uri;};
     fixedString = pkgs.callPackage ./fixedString.nix {  };
