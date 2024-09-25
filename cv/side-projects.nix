@@ -37,8 +37,7 @@ experiences = [
       "project" = "Pokemon Fire Red multiplayer";
       "url" = "pokemon-project.mp4";
       "description" = ''
-      Reverse-Engineering of Pokemon Fire Red using IDA Pro, adapting m-GBA emulator to support hooks on arbitrary memory addresses,
-      reading memory related to the game and offering a simple web-interface to control the actions of the AI.
+      Reverse-Engineering of Pokemon Fire Red using IDA Pro, adapting m-GBA emulator to support hooks on arbitrary memory addresses, reading memory related to the game and offering a simple web-interface to control the actions of the AI.
       '';
     }
     {
@@ -46,8 +45,7 @@ experiences = [
       "project" = "Barebones MMORPG server";
       "url" = "https://gitlab.com/ruben.cano96/servermmo21";
       "description" = ''
-        Unfinished MMORPG server written in C++ using postgresql and redis for the backend and ENet for the networking following the principles of 
-        the articles written by <a href="http://ithare.com/category/dnd-of-mogs-vol1-1st-beta">It Hare</a>
+        Unfinished MMORPG server written in C++ using postgresql and redis for the backend and ENet for the networking following the principles of the articles written by <a href="http://ithare.com/category/dnd-of-mogs-vol1-1st-beta">It Hare</a>
       '';
     }
     {
