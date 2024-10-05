@@ -9,7 +9,7 @@ in
 rec {
     name = "Rust enums in c++17";
     category = "C++";
-    date = "2024-05-10";
+    date = "2024-10-05";
     authors = ["ruben"];
     content = ''
 
