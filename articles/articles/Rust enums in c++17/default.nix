@@ -7,7 +7,7 @@ website_image = (utils.file2base64 ./assets/website.jpg).htmlImage;
 
 in
 rec {
-    name = "Rust enuims in c++17";
+    name = "Rust enums in c++17";
     category = "C++";
     date = "2024-05-10";
     authors = ["ruben"];
@@ -285,7 +285,8 @@ it will return the value, if not it will simply not compile, but if you want to 
 
 You can play with the final code in the [compiler explorer](https://blog.godbolt.org/z/xjaEM4oEz).
 
-And here is the full code for the final example: (Compile with `g++ -std=c++20`), c++20 is required because of the improved CTAD rules.
+And here is the full code for the final example: (Compile with `g++ -std=c++20`), c++20 is required because of the improved CTAD rules, 
+but you could use c++17 if you define the template deduction guides for the overloaded struct as shown in the cppreference examples.
 
 ```cpp
 #include <iostream>
