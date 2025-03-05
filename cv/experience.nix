@@ -8,7 +8,7 @@ experiences = [
         # this is html
         "description" = ''
         <h4>OmpSs@FPGA + CUDA + CL (public):</h4>
-        - Coherency layer between any number of virtual or phyiscal memory spaces.
+        - Coherency layer between any number of virtual or physical memory spaces.
         - Framework that allows to execute the asynchronous-tasks once the data is ready on the device.
         - Baremetal RISC-V tasks protocol and integration with OmpSs-2 runtime. 
         - Support for execution of tasks in FPGA accelerators for OmpSs-2 runtime. 
