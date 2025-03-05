@@ -16,14 +16,15 @@ experiences = [
         - Runtime CUDA-Loader that self-reads the elf file and loads the CUDA kernels into the device. 
 
         <h4>European MEEP project (public): </h4>
+        - Experience with Alveo U280 and U55C cards using vivado software.
         - QEMU remote pci-forwarder device and AXI bridge for verilator.
         - Simulated UART over PCIe bar and baremetal UART-Lite drivers.
         - 1st-stage bootloader for RISC-V which with a memory viewer/editor.
         - U-BOOT Port to our custom RISC-V core.
         - Linux-boot on our custom RISC-V core.
         - Linux Kernel dma-api implementation for our RISC-V architecture
-        - Shared memory between PCIe host and RISC-V core.
-        - Ethernet over shared memory.
+        - Shared memory between PCIe host and RISC-V core residing in FPGA.
+        - Ethernet over shared memory host/riscv-fpga.
         - PCIe ethernet device driver for "verilog-ethernet" IP.
         - Interfacing of RISC-V cores with interconnects/devices and DRAM/HBM memory on FPGA.
 
@@ -34,7 +35,7 @@ experiences = [
           '';
     }
     {
-        "year" = "2022-2024";
+        "year" = "2022-2025";
         "company" = "Wordline Iberia SAU | PERE IV, 291, 08020 Barcelona";
         "position" = "Software Engineer";
         "description" = ''
@@ -43,9 +44,9 @@ experiences = [
             - Analyze performance bottlenecks and create traces to identify the root cause.
             - Introduce new tools and methodologies to improve the development process.
             - Create and maintain CI/CD pipelines for the projects.
-            - Lead a team to develop a development environment for (~400 developers) using Nix language.
-            - Work in client-related projects to develop new features and fix bugs in financial application.
+            - Lead a team to develop a development environment for (~400 developers) using Nix language and containerization technologies.
             - Perform code mentoring and training sessions on Container Technologies, Nix and C++20.
+            - Work in client-related projects to develop new features in a financial application.
         '';
     }
 ];

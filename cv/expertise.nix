@@ -9,31 +9,32 @@ let
 
   array_of_expertise = [
     "Participant in SC18 Student Cluster Competition"
-    "ex-Board Member of video games development association (VGAFIB)"
-    "FPGA"
+    "Parallel Programming & HPC"
+    "Performance Analysis"
     "CUDA"
     "C++23"
-    "Nix Language"
-    "Game Development"
-    "Container Technologies"
-    "Parallel Programming & HPC"
-    "Embeded Systems"
-    "RISC-V"
+    "Software Architecture"
+    "Embedded Systems"
+    "FPGA"
+    "Xilinx Vivado"
     "Low Level Programming & Assembly"
-    "Processor Interfacing" 
-    "Knowledege in Driver Development"
+    "RISC-V"
+    "Familiar with Driver Development"
+    "Processor Interfacing"
     "Memory Management"
     "Unix Systems"
+    "Container Technologies"
+    "Docker"
     "CI/CD Pipelines"
+    "Reproducible Builds"
     "Agile Methodologies"
     "Monitoring & Tracing"
-    "Performance Analysis"
-    "Software Architecture"
+    "Nix Language"
     "Reverse Engineering"
-    "Reproducible Builds"
-    "3D Printing"
-    "Minimize Errors"
-  ];
+    "ex-Board Member of video games development association (VGAFIB)"
+    "Game Development"
+];
+
 in
 ''
 <div class="expertise padding-top-bg">
