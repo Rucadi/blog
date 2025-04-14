@@ -12,12 +12,14 @@ let
 
     index.html = pkgs.writeTextDir "site/index.html" (htmlGenerator shortArticleHtmlList);
     curriculum = pkgs.writeTextDir "site/cv.html" cv;
+    morsegame = pkgs.writeTextDir "site/morse_game.html" (builtins.readFile ./pages/morse_game.html);
 in
 pkgs.buildEnv {
     name = "site";
     paths = [
         index.html
         curriculum
+        morsegame
         ./embed
         ] ++ map 
         (article: article.file) articles;
