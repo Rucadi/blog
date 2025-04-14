@@ -262,14 +262,9 @@ Result<double, MyError> compute();
 Result<double, MyError> foo(){
     double result = []{
         auto res = compute();
-        match(res,
-        [](MyError) {
-            -->shortcircuit foo to return directly!!
-        },
-        [](double value) {
-            return value;
-        });
-    };
+        match(res, [](MyError) { -->shortcircuit foo to return directly!! },
+                   [](double value) { return value; });
+     };
     std::puts("If error I can't reach here"); 
     return result;
 }
@@ -296,15 +291,18 @@ Result<double, DivideByZero> compute_expression(double a, double b) {
 }
 ```
 
-## GCC C Extensions to the resque
+## GCC C Extensions to the rescue
 
 Somehow, I arrived to this GCC man page while doing my research in how could I improve the error handling in C++:
 
-[Statements and Declarations in Expressions](https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html)
+[Statements and Declarations in Expressions](https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html) or also called braced-groups within expressions
 
-This extension, supported at least in **GCC** and **CLANG** compilers, allow us to execute some code before assigning a value to a variable.
 
-So it is possible that you have found this pattern in c++ code before:
+This extension, supported at least in **GCC** and **CLANG** compilers, allow us to execute some code before assigning a value to a variable, this extension is even used in Linux Kernel and appears in the [linux kernel coding style guide](https://www.kernel.org/doc/html/v4.10/process/coding-style.html#macros-enums-and-rtl).
+
+MSVC doesn't seem to support this extension, so you'll have to fallback to use [Clang on visual studio](https://learn.microsoft.com/en-us/cpp/build/clang-support-msbuild?view=msvc-170) or MinGW.
+
+It is possible that you have found this pattern in c++ code before:
 
 ```cpp
   const int my_value = [] {
@@ -422,7 +420,7 @@ For this, we can use [std::from_chars()](https://en.cppreference.com/w/cpp/utili
 ```cpp
 struct InvalidDoubleConversion { std::string_view message; };
 
-auto safe_str_to_double(std::string_view str) -> Result<double, InvalidDoubleConversion>  {
+Result<double, InvalidDoubleConversion> safe_str_to_double(std::string_view str)   {
     double value = 0.0;
     auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
     
@@ -450,7 +448,7 @@ This is pretty useful, since the API to calling this function now provides a cle
 
 ```cpp
 
-auto parse_coordinate(const std::string& input) -> Result<Coordinate, Error<InvalidDoubleConversion, InvalidCoordinate, InvalidCoordinateFormat>>  {
+Result<Coordinate, Error<InvalidDoubleConversion, InvalidCoordinate, InvalidCoordinateFormat>> parse_coordinate(const std::string& input) {
     std::istringstream ss(input);
     std::string lat_str, lon_str;
     
@@ -478,7 +476,7 @@ Finally, we have the parse_coordinates function, which doesn't expose any new er
 
 Since we only have a try_get call to parse_coordinate, this Error signature is the same as parse_coordinate, but the RESULT type here is different, here we return a vector of all the coordinates only if everyting succeded, if not, we short-circuit the error! 
 ```cpp
-auto parse_coordinates(const std::string& input) -> Result<std::vector<Coordinate>, Error<InvalidDoubleConversion, InvalidCoordinate, InvalidCoordinateFormat>> {
+Result<std::vector<Coordinate>, Error<InvalidDoubleConversion, InvalidCoordinate, InvalidCoordinateFormat>> parse_coordinates(const std::string& input) {
     std::vector<Coordinate> coordinates;
     std::istringstream ss(input);
     std::string token;
