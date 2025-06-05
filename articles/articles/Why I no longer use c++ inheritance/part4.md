@@ -1,6 +1,6 @@
 
 
-# Performance
+# 4. Performance
 
 Below is a comparison of three approaches—classic inheritance, `std::variant` with polymorphic classes, and `std::variant` with plain structs—each benchmarked on creation of 1 000 000 objects and running an update loop of 1 000 iterations over the same set.
 

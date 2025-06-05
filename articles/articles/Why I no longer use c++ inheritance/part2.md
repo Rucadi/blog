@@ -82,7 +82,7 @@ In this design:
 
 This separation of concerns leverages the strengths of both approaches: inheritance for behavior, composition for data.
 
-## 2.  Non-virtual interfaces with Concepts
+## Non-virtual interfaces with Concepts
 
 Introduced in C++20, **concepts** offer a powerful way to define requirements on types—both behavior *and* data—without relying on inheritance. Unlike pure virtual interfaces, in a way, a concept is making questions to the compiler, and returning true or false from the requires expression depending if the compiler can compile the code or agrees with your statements.
 

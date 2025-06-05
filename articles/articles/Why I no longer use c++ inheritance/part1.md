@@ -1,6 +1,6 @@
 
 
-# Traditional Uses of Inheritance and Interfaces
+# 1. Traditional Uses of Inheritance and Interfaces
 
 In any language, an Interface (or API) is a contract which defines which methods can be called for specific functionality. In the case of C++, interfaces are often tied to a **class** which defines some data and methods to work with that data. However, in C++ it is also common to use this interfacing for polymorphism, which is achieved via inheritance.
 
