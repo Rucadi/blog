@@ -36,10 +36,19 @@ This design delivers stronger type safety, prevents "slicing" (where a derived o
 | **Exhaustiveness**    | Enforced by compiler        | Enforced by template instantiation  |
 | **Type compatibility** | Does not require modification to types | Requires types that inherit from a common base and have an accept method|
 
-# Inheritance with visitor pattern vs std::variant + std::visit
+# 
+
+### ⛔ Approach 1: Classic Visitor Pattern via Inheritance
+
+In situations where you have a fixed class hierarchy (e.g., Base with several DerivedX classes) and you want to perform operations that depend on the concrete derived type at runtime, the Visitor Pattern is a well-known solution. It lets you define a separate “visitor” object to encapsulate behavior, rather than putting all of that logic inside each derived class or using cumbersome dynamic_casts.
 
 
-### 1. Inheritance + Visitor Pattern
+
+The accept() method in each Derived class calls back into the visitor's **visit(DerivedX&)** method, allowing the correct overload to run,
+You must introduce an abstract Visitor interface and declare a **visit(DerivedX&)** overload for every concrete subclass. Likewise, each Derived must override accept() to invoke the visitor.
+
+**This boilerplate can be tedious—especially when the hierarchy grows.**
+
 
 ```cpp
 #include <print>
@@ -109,7 +118,17 @@ int main() {
 
 ---
 
-### 2. `std::variant` + `std::visit` 
+
+
+### ✨ Approach 2: variant + visit
+
+If your goal is simply to hold a heterogeneous collection of “either A or B or C …” and then perform type‐specific behavior, you can avoid the boilerplate of the classic visitor‐pattern entirely by using std::variant. Instead of an inheritance hierarchy, you create plain structs (or value types), pack them into a std::variant<A, B>, and call std::visit with a callable (functor or lambda) that handles each type.
+
+It has the **same** limitation as the inheritance visitor pattern, where every possible variant alternative must be listed up front (e.g., std::variant<A,B>) (altought a variant could be a pointer to a base class and process that specially)
+
+It has also the benefit that instead of double-dispatching, `std::visit` uses a index over a table to call the correct method, being single-dispatch, which should be more performant. 
+
+At the same time, we have far less boilerplate, no abstract base class, no virtual dispatch, no accept() functions and **everything is resolved at compile time.** 
 
 ```cpp
 #include <print>
@@ -152,7 +171,22 @@ int main() {
 
 As we can see, the intent of the code is much clearer, we have less boilerplate and we don't have to deal with pointer usage nor extra heap allocations.
 
-However, this is not all, with some C++ metaprogramming following the ["overloaded pattern" shown in the examples of cppreference ](https://en.cppreference.com/w/cpp/utility/variant/visit2) and explain in other posts in this blog, we can create in-place visitors using lambdas.
+
+# Overloaded Pattern and “In‐Place” Visitors with Lambdas
+
+So far, we’ve seen two ways to perform type-based dispatch:
+
+Inheritance + classic Visitor (lots of boilerplate, virtual calls)
+
+std::variant + a hand-written VariantVisitor struct 
+
+
+However, this is not all, with some C++ metaprogramming and following the ["overloaded pattern" shown in the examples of cppreference ](https://en.cppreference.com/w/cpp/utility/variant/visit2) we can create in-place visitors for our types.
+
+
+## Overloaded pattern implementation
+
+Here, we have a possible overloaded pattern implementation as seen in the cppreference.
 
 ```cpp
 #include <variant>
@@ -164,14 +198,43 @@ struct overloaded : Ts... {
 };
 
 
+```
+
+This Overloaded pattern uses a combination of variadic templates, multiple inheritance **(for metaprogramming)**, and a fold‐expression to merge several callables (lambdas in this case!) into a single type that exposes all of their operator()() overloads.
+
+This allows us to do something like:
+
+```cpp 
+    for (auto const& obj : objects) {
+      std::visit(overloaded{
+        [](A const &a) {
+          std::println("Visiting A");
+        },
+        [](B const &b) {
+          std::println("Visiting B");
+        }
+      }, obj);
+    }
+```
+
+Which heavily reduces the visitors for simple use.
+
+## visit_variant helper
+
+
+To streamline variant visits even further, you can wrap std::visit and the overloaded‐helper into a single function template.
+
+```cpp
+
 template<typename Variant, typename... Fs>
 decltype(auto) visit_variant(Variant&& var, Fs&&... fs) {
     return std::visit(overloaded<Fs...>{std::forward<Fs>(fs)...}, std::forward<Variant>(var));
 }
 
-```
+``` 
 
-which allows us to change the code to:
+By forwarding both the variant and the callables, you avoid unnecessary copies. You can pass rvalue references, move-only types, etc., without friction.
+
 
 ```cpp
 #include <print>
@@ -205,7 +268,7 @@ int main() {
 }
 ```
 
-std::visit in this case, requires a struct that overlaods the operator () for all possible types of the variant, this means that if we fail to provide one, there will be a compile-time error, so we must be exhaustive. It will also always pick the method that better adheres to a type if an implicit conersion where to happen for simple types.
+std::visit in this case, requires a struct that overlaods the operator () for all possible types of the variant, this means that if we fail to provide one, there will be a **compile-time error**, so we must be exhaustive. It will also always pick the method that better adheres to a type if an implicit conersion where to happen for simple types.
 
 However, that's not all, now we can also group common functionality using "auto".
 
@@ -278,5 +341,7 @@ int main() {
 ```
 [Toy with it on compiler-explorer](https://visitor2.godbolt.org/z/5GrzWdPqj)
 
+# My Thoughts
 
-Making this pattern the most modern c++ compatible way of dealing with dynamic dispatch.
+``std::variant`` with ``std::visit`` offers a modern, efficient, and safer way to handle a fixed set of types without the boilerplate and overhead of inheritance. It shines when you want fast, cache-friendly dispatch and compile-time guarantees, and not only reduces errors, pointer usage, and complexity but is also generally more performant due to better memory layout and zero runtime overhead. This makes it an ideal choice for many use cases, especially where performance and safety are priorities. 
+It also imposes better practices to programmers with less experience and avoids all the common pitfalls that inheritance may introduce. 

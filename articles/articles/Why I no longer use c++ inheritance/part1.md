@@ -1,19 +1,16 @@
-I paved my way into the world of programming with Java and C++, It was almost mandatory to learn OOP and inheritance, when I first started programming, I was told that inheritance was the best way to reuse code and create a hierarchy of classes.
-Nobody in my surroundings never questioned this, we were even encouraged and forced to use inheritance in multiple university assignments. It almost seemed obvious, when I was into game development, there were multiple layers of inheritance in
-the enemies and items, each layer was inheriting for a different class, and it was easy to add new items and enemies by just inheriting from the base class.
 
-But as I had more experience with C++ and I had to deal with projects which used inheritance extensively, I started to see the cracks in the system.
 
-# <a name="TraditionalUseInheritanceInterfaces"></a> [Traditional Uses of Inheritance and Interfaces](#TraditionalUseInheritanceInterfaces)
+# Traditional Uses of Inheritance and Interfaces
 
-## Interfaces via Pure Virtual Classes
+In any language, an Interface (or API) is a contract which defines which methods can be called for specific functionality. In the case of C++, interfaces are often tied to a **class** which defines some data and methods to work with that data. However, in C++ it is also common to use this interfacing for polymorphism, which is achieved via inheritance.
 
-Is an interface which defines the method render, here however we begin encountering some of the C++ sharp edges, we have to declare render method as "pure virtual" by using the syntax =0, which means that this "class" that we use as interface will not be able to be created standalone and all who depends on this interface must implement that method, it is also a good practice to mark the destructor as virtual to force the destructor of inherited classsess to also be virtual.
+When we talk about inheritance in c++, we can refer to Interfacing via inheritance or expanding via inheritance, which are two different concepts.
 
-In general, interfaces are a way to allow to design a clear API to a ensure consistency between different implementations of functionality that are similar,
-for example, a class could have different implementations depending on the operating system, there could be a different implementation of the same semantics but using different algorithms with different trade-offs, like with memory allocators.
+When we talk about interfacing via inheritance, we're referring to the practice of using pure virtual functions in a base class to define a set of operations that derived classes must implement. This is a key part of achieving polymorphism in C++. The base class acts as an interface, and derived classes provide the specific implementations.
 
-Creating interfaces using inheritance, also allows us to create functions that accepts objects that implement an specific interface and to store objects that share the same interface using as the common type for the containers a pointer the interface class.
+However, we can also expand via inheritance, where a derived class builds upon the functionality provided by a base class. In this case, the base class is not necessarily abstract. It may contain implemented methods and data members that are shared among derived classes. The derived class can reuse, override, or extend these members to provide more specialized behavior.
+
+In this post, I will explain why I think that either of this approaches shouldn't rely on inheritance at all, and you should only use inheritance for metaprogramming.
 
 ## Interfaces via Pure Virtual Classes
 
@@ -26,7 +23,7 @@ struct IRenderable {
 };
 ```
 
-While the syntax may look a bit rough, `= 0` makes `render()` pure virtual, meaning that any subclass must provide its own implementation and makjing IRendereable not constructable.
+While the syntax may look a bit rough, `= 0` makes `render()` pure virtual, meaning that any subclass must provide its own implementation and making IRendereable not constructable.
 It is also good practice to mark The  destructor as `virtual`, which makes deleting through an `IRenderable*` to invoke the correct derived destructor.
 
 ## Interfaces for dynamic dispatch
@@ -170,6 +167,18 @@ struct B : virtual Base { };
 struct C : A, B { };  // C now has one Base subobject
 ```
 
+
+## Slicing
+When objects of derived types are passed or assigned by value to base class objects, the derived parts are lost.
+
+```cpp
+struct Base { int a; };
+struct Derived : Base { int b; };
+
+Base b = Derived(); // b.b is sliced off and lost
+```
+
+
 ## Too many specific keywords and syntax for inheritance
 
 C++ inheritance introduces a number of syntactic constructs that are rarely encountered outside of class hierarchies, this makes the language harder and adds little bits of information scattered around all the class that directly affect the behavior, which complicates the mental map of these classess.
@@ -204,6 +213,12 @@ C++ inheritance introduces a number of syntactic constructs that are rarely enco
         void foo(std::string);
     };
   ```
+- **Dynamic casting** which only support inherited types
+  ```cpp
+  Base* b = new Derived();
+  typeid(*b);        // RTTI required
+  dynamic_cast<D*>(b);
+  ```
 - **Qualified lookup for disambiguation:** call a specific base’s member
   ```cpp
   D d;
@@ -214,7 +229,21 @@ C++ inheritance introduces a number of syntactic constructs that are rarely enco
   struct B { virtual B* clone(); };
   struct D : B { D* clone() override; };
   ```
+
+- Explicitly defaulted or deleted special member functions
+  The base class can influence derived class behavior in implicit and subtle ways, especially with rule-of-five and defaulting/deleting:
+  ```cpp
+  Edit
+  struct Base {
+      Base(const Base&) = delete;
+  };
+  struct D : Base {
+      // Copy constructor deleted too
+  };
+  ```
+
 - **CRTP (Curiously Recurring Template Pattern):** static polymorphism via inheritance
+  CRTP can be hard to read and maintain, as the recursive inheritance pattern is non-intuitive and tightly couples the base to the derived class, but it offers zero-cost abstraction (which is good! 🎉), however it is also another case of inheritance-specific constructs.
   ```cpp
   template<typename T>
   struct Base { /*…*/ };
@@ -313,4 +342,6 @@ public:
 };
 ```
 
-This pattern is verbose and requires predefining all combinations of visitors and visitable types, limiting flexibility and increasing maintenance cost. It also contradicts the open/closed principle, since adding a new type requires modifying every visitor class. At this point, why use virtual polymorphic dispath at all?
+This pattern is verbose and requires predefining all combinations of visitors and visitable types, limiting flexibility and increasing maintenance cost. It also contradicts the open/closed principle, since adding a new type requires modifying every visitor class. 
+
+This should make you think: **At this point, why use virtual polymorphic dispath at all?**
