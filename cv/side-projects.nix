@@ -1,6 +1,44 @@
 let 
 
 experiences = [
+
+        {
+        "year" = "2025";
+        "project" = "toywithraylib";
+        "url" = "https://toywithraylib.com/";
+        # this is html
+        "description" = ''
+          Build and run raylib games directly in the browser (locally, without a build server) using WebAssembly and Emscripten.
+        '';
+      }
+
+      {
+        "year" = "2025";
+        "project" = "py-nixeval";
+        "url" = "https://github.com/Rucadi/py-nixeval";
+        # this is html
+        "description" = ''
+          Run Nix evaluations from Python, allowing to use Nix as a backend for Python applications and configurations, compatible with Windows, Linux and MacOS.
+        '';
+      }
+        {
+        "year" = "2025";
+        "project" = "njq";
+        "url" = "https://github.com/Rucadi/njq";
+        # this is html
+        "description" = ''
+          jq-like tool to query Nix and JSON expressions but using Nix as the query language.
+        '';
+      }
+      {
+        "year" = "2025";
+        "project" = "cpp-match";
+        "url" = "https://github.com/Rucadi/cpp-match";
+        # this is html
+        "description" = ''
+          Allows using Rust-like error handling in C++ using match expressions and early returns using a C gnu extension.  
+        '';
+    }
     {
         "year" = "2024";
         "project" = "Port Super Mario 64 and other apps to LG Smart TV";
