@@ -1,11 +1,10 @@
 let 
 
 about = ''
-I'm a highly passionate and motivated engineer, in all my years as a computer entusiast, I've developed a quite broad set of skills,
-which usually means that I'm able to tackle a wide range of problems, from low level programming to high level programming. I'm always
-looking for new challenges and I'm always eager to learn new things and I love to have ideas to work on.
+I am a results-driven engineer with expertise across software and hardware domains, including embedded systems, high-performance computing, and modern development workflows.
+I excel at translating complex problems into reliable, maintainable solutions and I have a strong track record of delivering high-impact engineering work.
 
-At the same time, I enjoy teaching and sharing my knowledge with others, so I ocassionally perform training sessions.'';
+I also enjoy mentoring colleagues and sharing knowledge through training and collaborative initiatives.'';
 
 in
 ''

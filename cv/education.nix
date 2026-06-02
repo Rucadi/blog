@@ -4,19 +4,19 @@ let
   array_of_education = [
     {
       year = "2020";
-      title = "MASTER IN INNOVATION AND RESEARCH IN INFORMATICS: HPC";
+      title = "Master in Innovation and Research in Informatics: HPC";
       school = "Polytechnic University of Catalonia (UPC)";
       where = "Catalonia, Spain";
     }
     {
       year = "2018";
-      title = "BACHELOR OF INFORMATICS ENGINEERING: HARDWARE";
+      title = "Bachelor of Informatics Engineering: Hardware";
       school = "Polytechnic University of Catalonia (UPC)";
       where = "Catalonia, Spain";
     }
     {
       year = "2017";
-      title = "Summer School: Computer Vision and Chinese";
+      title = "Summer School in Computer Vision and Chinese";
       school = "Beihang University (Beijing University of Aeronautics and Astronautics)";
       where = "Beijing, China";
     }

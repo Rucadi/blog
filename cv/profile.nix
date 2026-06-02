@@ -2,7 +2,7 @@ let
     utils = import ../nixutils {};
     name = "Ruben Cano Diaz";
     title = "Software and Hardware engineer";
-    photo = (utils.file2base64 ../images/profile.jpg).htmlImage;
+    photo = (utils.file2base64 ../images/RubenFoto.jpg).htmlImage;
 in
 ''
 <div class="profile">

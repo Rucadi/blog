@@ -16,14 +16,19 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'lato', sans-serif;
-    background-color: #a8adb6;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #eff1f5;
 }
 
 .resume {
-    margin: 10rem;
+    margin: 4rem;
+    max-width: 1200px;
+    background-color: transparent;
     display: grid;
     grid-template-columns: 1fr 2fr;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.12);
 }
 
 .resume .left-side {
@@ -169,12 +174,16 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
     padding-bottom: 1rem;
 }
 
+.lang-box > div {
+    flex: 1;
+}
+
 .lang-box p {
-    width: 40%;
+    margin-bottom: 0.5rem;
 }
 
 .lang-box .percent {
@@ -283,6 +292,18 @@ body {
 
 .refer .contact p {
     width: 75%;
+}
+
+.xp-link {
+    color: #2264ff;
+    text-decoration: none;
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    display: inline-block;
+}
+
+.xp-link:hover {
+    text-decoration: underline;
 }
 
 /* Responsive */

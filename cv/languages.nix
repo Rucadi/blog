@@ -1,13 +1,16 @@
 let 
   langs = [
-    {name = "English"; percent = 90;}
-    {name = "Spanish"; percent = 100;}
-    {name = "Catalan"; percent = 100;}
+    {name = "English"; level = "Professional";}
+    {name = "Spanish"; level = "Native";}
+    {name = "Catalan"; level = "Native";}
   ];
 
   gen = x: ''
   <div class="lang-box">
-      <p class="info-title">${x.name}</p>
+      <div>
+          <p class="info-title">${x.name}</p>
+          <div class="info">${x.level}</div>
+      </div>
   </div>
   '';
 in

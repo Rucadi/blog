@@ -8,35 +8,34 @@ let
   '';
 
   array_of_expertise = [
-    "Participant in SC18 Student Cluster Competition"
-    "Nix Language"
-    "Parallel Programming & HPC"
-    "Performance Analysis"
-    "Monitoring & Tracing"
-    "C++23"
-    "Software Architecture"
-    "Embedded Systems"
-    "Low Level Programming & Assembly"
-    "Xilinx Vivado"
-    "FPGA"
-    "CUDA"
-    "RISC-V"
-    "Driver Development"
-    "Processor Interfacing"
-    "Memory Management"
-    "Container Technologies"
-    "Docker"
-    "CI/CD Pipelines"
-    "Reproducible Builds"
-    "Reverse Engineering"
-    "ex-Board Member of video games development association (VGAFIB)"
-    "Agile Methodologies"
-];
+  "Modern C++ (C++20/23)"
+  "Software Architecture"
+  "Parallel Programming & HPC"
+  "Performance Analysis & Optimization"
+  "Monitoring, Profiling & Tracing"
+  "Nix & Reproducible Builds"
+  "CI/CD & DevOps"
+  "Containerization (Docker)"
+  "Embedded Systems"
+  "Low-Level Programming & Assembly"
+  "Driver Development"
+  "Memory Management"
+  "Processor Interfacing"
+  "FPGA Development"
+  "Xilinx Vivado"
+  "CUDA"
+  "RISC-V"
+  "Reverse Engineering"
+  "Agile Development"
+  "SC18 Student Cluster Competition Participant"
+  "Former Board Member, VGAFIB"
+  ];
+
 
 in
 ''
 <div class="expertise padding-top-bg">
-  <h1 class="heading-primary-white">Misc</h1>
+  <h1 class="heading-primary-white">Skills & Competencies</h1>
   ${builtins.concatStringsSep "" (map gen array_of_expertise)}
 </div>
 ''
